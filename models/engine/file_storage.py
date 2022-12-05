@@ -37,8 +37,8 @@ class FileStorage:
 
     def reload(self):
         """Deserialize the JSON file __file_path to __objects, if it exists."""
-        if (os.path.isfile(self.__file_path)
-                and os.path.getsize(self.__file_path) > 0):
+        path = self.__file_path
+        if (os.path.isfile(path) and os.path.getsize(path) > 0):
             with open(self.__file_path, 'r') as f:
                 self.__objects = {k: self.get_class(k.split(".")[0])(**v)
                                   for k, v in json.load(f).items()}
