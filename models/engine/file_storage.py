@@ -22,9 +22,11 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         """returns the dictionary __objects"""
-        return {k: v for k, v in self.__objects.items()}
+        if cls is None:
+            return {k: v for k, v in self.__objects.items()}
+        return {k: v for k, v in self.__objects.items() if type(v) == cls}
 
     def new(self, obj):
         """Set in __objects obj with key <obj_class_name>.id"""
@@ -43,8 +45,11 @@ class FileStorage:
                 self.__objects = {k: self.get_class(k.split(".")[0])(**v)
                                   for k, v in json.load(f).items()}
 
-    def delete(self, key):
-        """Deletes an object with the specified key"""
+    def delete(self, obj=None):
+        """Deletes an object"""
+        if obj is None:
+            return None
+        key = f"{obj.__class__.__name__}.{obj.id}"
         return self.__objects.pop(key, None)
 
     def get_class(self, name):

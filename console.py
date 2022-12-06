@@ -62,7 +62,7 @@ class HBNBCommand(cmd.Cmd):
         if key is None:
             return
 
-        saved_obj = storage.delete(key)
+        saved_obj = storage.delete(storage.all().get(key, None))
         if saved_obj is None:
             print("** no instance found **")
         else:
