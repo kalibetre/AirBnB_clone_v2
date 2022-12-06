@@ -88,6 +88,8 @@ class TestReview(unittest.TestCase):
         keys = temp_dict.keys()
 
         for k, v in self.test_obj.__dict__.items():
+            if k == "_sa_instance_state":
+                continue
             self.assertIn(k, keys)
             if not isinstance(self.test_obj.__dict__[k], datetime):
                 self.assertEqual(temp_dict[k], v)
@@ -100,13 +102,6 @@ class TestReview(unittest.TestCase):
         self.assertIn("__class__", temp_dict.keys())
         self.assertEqual(temp_dict["__class__"],
                          Review.__name__)
-
-    def test_init_with_kwargs(self):
-        """test that Review can be constructed from kwargs"""
-        temp_obj_2 = Review(**self.test_obj.to_dict())
-
-        for k, v in self.test_obj.__dict__.items():
-            self.assertEqual(v, temp_obj_2.__dict__[k])
 
 
 if __name__ == "__main__":
