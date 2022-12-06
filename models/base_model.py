@@ -32,8 +32,7 @@ class BaseModel:
                     setattr(self, k, datetime.fromisoformat(v))
                 else:
                     setattr(self, k, v)
-        else:
-            models.storage.new(self)
+        models.storage.new(self)
 
     def save(self):
         """Update updated_at with the current datetime."""
