@@ -179,8 +179,8 @@ class TestConsoleCreate(unittest.TestCase):
 
     def tearDown(cls):
         """removes the file.json temporary file"""
-        # if os.path.exists('file.json'):
-        #     os.remove('file.json')
+        if os.path.exists('file.json'):
+            os.remove('file.json')
 
     def test_create_prints_class_name_error(self):
         """tests the create command class name error"""

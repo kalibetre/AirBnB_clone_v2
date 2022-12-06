@@ -259,7 +259,7 @@ class HBNBCommand(cmd.Cmd):
                 continue
 
             if value.startswith('"'):
-                value = value.strip('"').replace('"', '\\"').replace("_", " ")
+                value = value.strip('"').replace("_", " ")
             else:
                 value = self.to_number(value)
 
