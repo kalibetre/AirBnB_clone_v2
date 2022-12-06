@@ -4,14 +4,35 @@
 This Module contains a definition for State Class
 """
 
-from models.base_model import BaseModel
+from os import getenv
+
+from sqlalchemy import Column, String
+from sqlalchemy.orm import backref, relationship
+
+import models
+from models.base_model import Base, BaseModel
+from models.city import City
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     """A class that represents a state
 
     Attribute:
         name (str): the name of the state
     """
+    __tablename__ = "states"
+    name = Column(String(128), nullable=False)
 
-    name = ""
+    if getenv("HBNB_TYPE_STORAGE") != "db":
+        @property
+        def cities(self):
+            """Get list of cities that match this state id"""
+            return [
+                v for _, v in models.storage.all(City).items()
+                if v.state_id == self.id
+            ]
+    else:
+        cities = relationship(
+            "City",
+            cascade="all, delete, delete-orphan",
+            backref=backref("state"),)

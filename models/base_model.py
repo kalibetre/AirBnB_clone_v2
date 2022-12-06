@@ -7,11 +7,22 @@ This Module contains a definition for BaseModel Class
 import uuid
 from datetime import datetime
 
+from sqlalchemy import Column, DateTime, String
+from sqlalchemy.orm import declarative_base
+
 import models
+
+Base = declarative_base()
 
 
 class BaseModel:
     """BaseModel Class"""
+
+    id = Column(String(60), nullable=False, primary_key=True)
+    created_at = Column(
+        DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, nullable=False)
 
     def __init__(self, *args, **kwargs):
         """__init__ method & instantiation of class BaseModel
@@ -21,8 +32,8 @@ class BaseModel:
             **kwargs (dict): Key/value pairs
         """
         self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        self.created_at = datetime.utcnow()
+        self.updated_at = datetime.utcnow()
 
         if kwargs is not None and len(kwargs) > 0:
             for k, v in kwargs.items():
@@ -32,12 +43,16 @@ class BaseModel:
                     setattr(self, k, datetime.fromisoformat(v))
                 else:
                     setattr(self, k, v)
-        models.storage.new(self)
 
     def save(self):
         """Update updated_at with the current datetime."""
         self.updated_at = datetime.now()
+        models.storage.new(self)
         models.storage.save()
+
+    def delete(self):
+        """Deletes the current instance from storage"""
+        models.storage.delete(self)
 
     def to_dict(self):
         """
@@ -51,8 +66,10 @@ class BaseModel:
             }
         )
         bs_dict["__class__"] = self.__class__.__name__
+        if "_sa_instance_state" in list(bs_dict.keys()):
+            del bs_dict["_sa_instance_state"]
         return bs_dict
 
     def __str__(self) -> str:
         """should print/str representation of the BaseModel instance."""
-        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
+        return f"[{self.__class__.__name__}] ({self.id}) {self.to_dict()}"
