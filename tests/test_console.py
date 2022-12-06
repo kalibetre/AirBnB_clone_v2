@@ -207,6 +207,47 @@ class TestConsoleCreate(unittest.TestCase):
             self.cmd.onecmd(f'show BaseModel {id}')
             self.assertIn(id.strip('\n'), output.getvalue())
 
+    def test_create_creates_an_obj_with_args(self):
+        """tests the create cmd accepts args"""
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.cmd.onecmd('create BaseModel name="test"')
+            id = output.getvalue
+            self.assertNotIn(id, [None, ""])
+
+    def test_create_creates_an_obj_with_args_check_arg(self):
+        """tests the create cmd accepts args and sets them correctly"""
+        with patch('sys.stdout', new=StringIO()) as output:
+            self.cmd.onecmd('create Review text="Good Review"')
+            id = output.getvalue().strip('\n')
+            self.cmd.onecmd(f'show Review {id}')
+            self.assertIn("Review", output.getvalue())
+            self.assertIn("Good Review", output.getvalue())
+
+    def test_create_creates_an_obj_skips_invalid_args(self):
+        """tests the create cmd accepts args and sets them correctly"""
+        with patch('sys.stdout', new=StringIO()) as output:
+            self.cmd.onecmd('create Review text=Good')
+            id = output.getvalue().strip('\n')
+            self.cmd.onecmd(f'show Review {id}')
+            self.assertIn("Review", output.getvalue())
+            self.assertNotIn("Good", output.getvalue())
+
+    def test_create_creates_an_obj_reads_int(self):
+        with patch('sys.stdout', new=StringIO()) as output:
+            self.cmd.onecmd('create Place number_rooms=1234')
+            id = output.getvalue().strip('\n')
+            self.cmd.onecmd(f'show Place {id}')
+            self.assertIn("Place", output.getvalue())
+            self.assertIn("1234", output.getvalue())
+
+    def test_create_creates_an_obj_reads_float(self):
+        with patch('sys.stdout', new=StringIO()) as output:
+            self.cmd.onecmd('create Place latitude=12.34')
+            id = output.getvalue().strip('\n')
+            self.cmd.onecmd(f'show Place {id}')
+            self.assertIn("Place", output.getvalue())
+            self.assertIn("12.34", output.getvalue())
+
 
 class TestConsoleUpdate(unittest.TestCase):
     """Tests the console app"""
