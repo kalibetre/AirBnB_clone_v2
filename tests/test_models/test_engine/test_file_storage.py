@@ -83,6 +83,16 @@ class TestFileStorage(unittest.TestCase):
         self.assertIsInstance(self.storage.all(), dict)
         self.assertGreaterEqual(len(self.storage.all()), 2)
 
+    def test_all_returns_only_the_class_specified(self):
+        """tests all method returns only the type specified"""
+        temp_obj = BaseModel()
+        temp_usr = User()
+        self.storage.new(temp_obj)
+        self.storage.new(temp_usr)
+        self.assertIsInstance(self.storage.all(), dict)
+        self.assertGreaterEqual(len(self.storage.all(User)), 1)
+        self.assertIsInstance(list(self.storage.all(User).values())[0], User)
+
     def test_new_adds_instance_obj_to_dict_of_objects(self):
         """tests wether the instance method 'new' adds new object"""
         temp_obj = BaseModel()
