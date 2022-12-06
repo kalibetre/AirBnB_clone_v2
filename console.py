@@ -257,8 +257,12 @@ class HBNBCommand(cmd.Cmd):
                 [match.group(1), match.group(2)])
             if None in [key, value]:
                 continue
-            value = value.replace('"', '') if value.startswith(
-                '"') else self.to_number(value)
+
+            if value.startswith('"'):
+                value = value.strip('"').replace('"', '\\"').replace("_", " ")
+            else:
+                value = self.to_number(value)
+
             if value is None:
                 continue
             params[key] = value

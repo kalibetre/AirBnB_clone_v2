@@ -179,8 +179,8 @@ class TestConsoleCreate(unittest.TestCase):
 
     def tearDown(cls):
         """removes the file.json temporary file"""
-        if os.path.exists('file.json'):
-            os.remove('file.json')
+        # if os.path.exists('file.json'):
+        #     os.remove('file.json')
 
     def test_create_prints_class_name_error(self):
         """tests the create command class name error"""
@@ -231,6 +231,15 @@ class TestConsoleCreate(unittest.TestCase):
             self.cmd.onecmd(f'show Review {id}')
             self.assertIn("Review", output.getvalue())
             self.assertNotIn("Good", output.getvalue())
+
+    def test_create_replaces_underscore_args(self):
+        """tests the create cmd replaces underscore with spaces"""
+        with patch('sys.stdout', new=StringIO()) as output:
+            self.cmd.onecmd('create Review text="My_little_house"')
+            id = output.getvalue().strip('\n')
+            self.cmd.onecmd(f'show Review {id}')
+            self.assertIn("Review", output.getvalue())
+            self.assertIn("My little house", output.getvalue())
 
     def test_create_creates_an_obj_reads_int(self):
         with patch('sys.stdout', new=StringIO()) as output:
