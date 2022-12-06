@@ -4,9 +4,14 @@
 This Module contains a definition for Place Class
 """
 
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from os import getenv
 
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import backref, relationship
+
+import models
 from models.base_model import Base, BaseModel
+from models.review import Review
 
 
 class Place(BaseModel, Base):
@@ -38,3 +43,17 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, default=0, nullable=False)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
+
+    if getenv("HBNB_TYPE_STORAGE") != "db":
+        @property
+        def reviews(self):
+            """Get list of reviews that match this place id"""
+            return [
+                v for _, v in models.storage.all(Review).items()
+                if v.place_id == self.id
+            ]
+    else:
+        reviews = relationship(
+            "Review",
+            cascade="all, delete, delete-orphan",
+            backref=backref("place"),)
