@@ -72,13 +72,12 @@ class HBNBCommand(cmd.Cmd):
         """Shows all objects, or all of a class
         print("[Usage]: all <className>\n"""
         if len(line.split()) == 0:
-            result = storage.all().values()
+            result = list(storage.all().values())
         else:
             obj_cls = self.get_class_from_input(line)
             if obj_cls is None:
                 return
-            result = list(filter(lambda item: isinstance(
-                item, obj_cls), storage.all().values()))
+            result = list(storage.all(obj_cls).values())
 
         print([str(item) for item in result])
 
@@ -250,7 +249,7 @@ class HBNBCommand(cmd.Cmd):
 
     def read_params(self, args: str):
         params = {}
-        regex = r"(\w*)=(\".*\"|[-.\d]*)"
+        regex = r"(\w*)=(\"[^=]*\"|[-.\d]*)"
         matches = re.finditer(regex, args)
         for _, match in enumerate(matches):
             key, value = tuple(
