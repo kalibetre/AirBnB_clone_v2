@@ -34,7 +34,11 @@ class HBNBCommand(cmd.Cmd):
         [Usage]: create <className>"""
         obj_cls = self.get_class_from_input(line)
         if obj_cls is not None:
-            new_obj = obj_cls(self.read_params(line))
+            params = self.read_params(line)
+            if params is not None:
+                new_obj = obj_cls(**params)
+            else:
+                new_obj = obj_cls()
             new_obj.save()
             print(new_obj.id)
 
@@ -58,7 +62,7 @@ class HBNBCommand(cmd.Cmd):
         if key is None:
             return
 
-        saved_obj = storage.all().pop(key, None)
+        saved_obj = storage.delete(key)
         if saved_obj is None:
             print("** no instance found **")
         else:
@@ -246,20 +250,18 @@ class HBNBCommand(cmd.Cmd):
 
     def read_params(self, args: str):
         params = {}
-        raw_params = args.split()
-        if (len(raw_params) <= 1):
-            return None
-
-        for param in raw_params:
-            if ("=" in param):
-                key, value = tuple(param.split("="))
-                if None in [key, value]:
-                    continue
-                value = value.replace('"', '') if value.startswith(
-                    '"') else self.to_number(value)
-                if value is None:
-                    continue
-                params[key] = value
+        regex = r"(\w*)=(\"[\w\s.]*\"|[\d.]*)"
+        matches = re.finditer(regex, args)
+        for _, match in enumerate(matches):
+            key, value = tuple(
+                [match.group(1), match.group(2)])
+            if None in [key, value]:
+                continue
+            value = value.replace('"', '') if value.startswith(
+                '"') else self.to_number(value)
+            if value is None:
+                continue
+            params[key] = value
 
         return params
 
