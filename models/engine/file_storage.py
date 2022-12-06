@@ -24,7 +24,7 @@ class FileStorage:
 
     def all(self):
         """returns the dictionary __objects"""
-        return self.__objects
+        return {k: v for k, v in self.__objects.items()}
 
     def new(self, obj):
         """Set in __objects obj with key <obj_class_name>.id"""
@@ -42,6 +42,10 @@ class FileStorage:
             with open(self.__file_path, 'r') as f:
                 self.__objects = {k: self.get_class(k.split(".")[0])(**v)
                                   for k, v in json.load(f).items()}
+
+    def delete(self, key):
+        """Deletes an object with the specified key"""
+        return self.__objects.pop(key, None)
 
     def get_class(self, name):
         """ returns a class from models module using its name"""
