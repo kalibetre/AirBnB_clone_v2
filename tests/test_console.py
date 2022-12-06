@@ -226,7 +226,7 @@ class TestConsoleCreate(unittest.TestCase):
     def test_create_creates_an_obj_skips_invalid_args(self):
         """tests the create cmd accepts args and sets them correctly"""
         with patch('sys.stdout', new=StringIO()) as output:
-            self.cmd.onecmd('create Review text=Good')
+            self.cmd.onecmd('create Review text=Good val val_2=')
             id = output.getvalue().strip('\n')
             self.cmd.onecmd(f'show Review {id}')
             self.assertIn("Review", output.getvalue())
