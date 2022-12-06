@@ -4,10 +4,12 @@
 This Module contains a definition for User Class
 """
 
-from models.base_model import BaseModel
+from sqlalchemy import Column, String
+
+from models.base_model import Base, BaseModel
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """A class that represents a user.
 
     Attributes:
@@ -16,8 +18,8 @@ class User(BaseModel):
         first_name (str): The first name of the user.
         last_name (str): The last name of the user.
     """
-
-    email = ""
-    password = ""
-    first_name = ""
-    last_name = ""
+    __tablename__ = "users"
+    email = Column(String(128), nullable=False)
+    password = Column(String(128), nullable=False)
+    first_name = Column(String(128), nullable=False)
+    last_name = Column(String(128), nullable=False)
