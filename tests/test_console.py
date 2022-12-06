@@ -242,11 +242,13 @@ class TestConsoleCreate(unittest.TestCase):
 
     def test_create_creates_an_obj_reads_float(self):
         with patch('sys.stdout', new=StringIO()) as output:
-            self.cmd.onecmd('create Place latitude=12.34')
+            self.cmd.onecmd(
+                'create Place latitude=37.773972 longitude=-122.431297')
             id = output.getvalue().strip('\n')
             self.cmd.onecmd(f'show Place {id}')
             self.assertIn("Place", output.getvalue())
-            self.assertIn("12.34", output.getvalue())
+            self.assertIn("37.773972", output.getvalue())
+            self.assertIn("-122.431297", output.getvalue())
 
 
 class TestConsoleUpdate(unittest.TestCase):

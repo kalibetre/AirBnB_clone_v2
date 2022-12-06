@@ -250,7 +250,7 @@ class HBNBCommand(cmd.Cmd):
 
     def read_params(self, args: str):
         params = {}
-        regex = r"(\w*)=(\"[\w\s.]*\"|[\d.]*)"
+        regex = r"(\w*)=(\"[\w\s.]*\"|-?[\d.]*)"
         matches = re.finditer(regex, args)
         for _, match in enumerate(matches):
             key, value = tuple(
