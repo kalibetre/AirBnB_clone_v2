@@ -93,7 +93,7 @@ class TestPlace(unittest.TestCase):
         self.test_obj.my_number = 89
         cls_name = Place.__name__
         id = self.test_obj.id
-        expected = f"[{cls_name}] ({id}) {self.test_obj.__dict__}"
+        expected = f"[{cls_name}] ({id}) {self.test_obj.to_dict()}"
         output = StringIO()
         sys.stdout = output
         print(self.test_obj)

@@ -4,16 +4,18 @@
 This Module contains a definition for City Class
 """
 
-from models.base_model import BaseModel
+from sqlalchemy import Column, ForeignKey, String
+
+from models.base_model import Base, BaseModel
 
 
-class City(BaseModel):
+class City(BaseModel, Base):
     """A class that represents a city
 
     Attributes:
         name (str): name of the city
         state_id (str): the state id
     """
-
-    state_id = ""
-    name = ""
+    __tablename__ = "cities"
+    state_id = Column(String(60), ForeignKey("states.id"), nullable=False)
+    name = Column(String(128), nullable=False)

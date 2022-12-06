@@ -157,10 +157,12 @@ class TestFileStorage(unittest.TestCase):
     def test_reload(self):
         """ Storage file is successfully loaded to __objects """
         new = BaseModel()
-        storage.save()
-        storage.reload()
+        new.save()
+        self.storage.reload()
+        loaded = None
         for obj in storage.all().values():
             loaded = obj
+        self.assertIsNotNone(loaded)
         self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
 
     def test_type_path(self):
