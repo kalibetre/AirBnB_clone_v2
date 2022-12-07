@@ -80,3 +80,13 @@ class TestDBStorage(unittest.TestCase):
         self.cmd.onecmd('create State name="California"')
         self.cur.execute("SELECT * FROM states")
         self.assertEqual(len(self.cur.fetchall()), exp_len + 1)
+
+    def test_delete_method_with_state(self):
+        """tests if the DB stores a state object"""
+        self.cmd.onecmd('create State name="California"')
+        self.cur.execute("SELECT * FROM states")
+        rows = self.cur.fetchall()
+        id = rows[0][0] if len(rows) > 0 else None
+        self.cmd.onecmd('destroy State %s', [id])
+        self.cur.execute("SELECT * FROM states")
+        self.assertEqual(len(self.cur.fetchall()), len(rows) - 1)
