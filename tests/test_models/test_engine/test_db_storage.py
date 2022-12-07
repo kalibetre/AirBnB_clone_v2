@@ -53,7 +53,6 @@ class TestDBStorage(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """initial configuration for tests"""
-        print(getenv("HBNB_MYSQL_HOST"))
         cls.conn = MySQLdb.connect(
             host=getenv("HBNB_MYSQL_HOST"),
             port=3306,
