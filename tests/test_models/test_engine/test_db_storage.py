@@ -5,7 +5,6 @@ import unittest
 from os import getenv
 
 import MySQLdb
-import pep8
 import pycodestyle
 
 import console
@@ -17,12 +16,6 @@ DBStorage = db_storage.DBStorage
 
 class TestDBStorageDocsAndStyle(unittest.TestCase):
     """Tests DBStorage class for documentation and style conformance"""
-
-    def test_pep8_DBStorage(self):
-        """Tests pep8 style compliance"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/engine/db_storage.py'])
-        self.assertEqual(p.total_errors, 0, "pep8 style error")
 
     def test_pycodestyle(self):
         """Tests compliance with pycodestyle"""
@@ -60,7 +53,6 @@ class TestDBStorage(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """initial configuration for tests"""
-        print(getenv("HBNB_MYSQL_HOST"))
         cls.conn = MySQLdb.connect(
             host=getenv("HBNB_MYSQL_HOST"),
             port=3306,
@@ -88,3 +80,13 @@ class TestDBStorage(unittest.TestCase):
         self.cmd.onecmd('create State name="California"')
         self.cur.execute("SELECT * FROM states")
         self.assertEqual(len(self.cur.fetchall()), exp_len + 1)
+
+    def test_delete_method_with_state(self):
+        """tests if the DB stores a state object"""
+        self.cmd.onecmd('create State name="California"')
+        self.cur.execute("SELECT * FROM states")
+        rows = self.cur.fetchall()
+        id = rows[0][0] if len(rows) > 0 else None
+        self.cmd.onecmd('destroy State %s', [id])
+        self.cur.execute("SELECT * FROM states")
+        self.assertEqual(len(self.cur.fetchall()), len(rows) - 1)
