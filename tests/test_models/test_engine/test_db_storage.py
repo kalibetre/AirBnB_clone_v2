@@ -5,7 +5,6 @@ import unittest
 from os import getenv
 
 import MySQLdb
-import pep8
 import pycodestyle
 
 import console
@@ -17,12 +16,6 @@ DBStorage = db_storage.DBStorage
 
 class TestDBStorageDocsAndStyle(unittest.TestCase):
     """Tests DBStorage class for documentation and style conformance"""
-
-    def test_pep8_DBStorage(self):
-        """Tests pep8 style compliance"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/engine/db_storage.py'])
-        self.assertEqual(p.total_errors, 0, "pep8 style error")
 
     def test_pycodestyle(self):
         """Tests compliance with pycodestyle"""

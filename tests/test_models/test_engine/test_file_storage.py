@@ -5,7 +5,6 @@ import json
 import os
 import unittest
 
-import pep8
 import pycodestyle
 
 from models.base_model import BaseModel
@@ -17,12 +16,6 @@ FileStorage = file_storage.FileStorage
 
 class TestFileStorageDocsAndStyle(unittest.TestCase):
     """Tests FileStorage class for documentation and style conformance"""
-
-    def test_pep8_FileStorage(self):
-        """Tests pep8 style compliance"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/engine/file_storage.py'])
-        self.assertEqual(p.total_errors, 0, "pep8 style error")
 
     def test_pycodestyle(self):
         """Tests compliance with pycodestyle"""

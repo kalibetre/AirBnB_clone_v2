@@ -10,7 +10,6 @@ import unittest
 from io import StringIO
 from unittest.mock import patch
 
-import pep8
 import pycodestyle
 
 import console
@@ -19,12 +18,6 @@ HBNBCommand = console.HBNBCommand
 
 
 class TestConsoleStyle(unittest.TestCase):
-    def test_pep8_console(self):
-        """Pep8 console.py"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(["console.py"])
-        self.assertEqual(p.total_errors, 0, 'fix Pep8')
-
     def test_pycodestyle(self):
         """Tests compliance with pycodestyle"""
         style = pycodestyle.StyleGuide(quiet=False)
