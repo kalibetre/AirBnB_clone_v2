@@ -8,7 +8,6 @@ import unittest
 import pep8
 import pycodestyle
 
-from models import storage
 from models.base_model import BaseModel
 from models.engine import file_storage
 from models.user import User
@@ -160,11 +159,11 @@ class TestFileStorage(unittest.TestCase):
         new.save()
         self.storage.reload()
         loaded = None
-        for obj in storage.all().values():
+        for obj in self.storage.all().values():
             loaded = obj
         self.assertIsNotNone(loaded)
         self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
 
     def test_type_path(self):
         """ Confirm __file_path is string """
-        self.assertEqual(type(storage._FileStorage__file_path), str)
+        self.assertEqual(type(self.storage._FileStorage__file_path), str)
