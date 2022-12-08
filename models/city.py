@@ -14,8 +14,8 @@ class City(BaseModel, Base):
     """A class that represents a city
 
     Attributes:
-        name (str): name of the city
-        state_id (str): the state id
+        name : name of the city
+        state_id : the state id
     """
     __tablename__ = "cities"
     state_id = Column(String(60), ForeignKey("states.id"), nullable=False)
