@@ -94,14 +94,11 @@ class TestFileStorage(unittest.TestCase):
 
     def test_save_method_saves_objects_to_file(self):
         """tests wether the save method saves objects to file"""
-        expected_objects = {}
+        expected_key = ""
         for _ in range(4):
             bs_mdl = BaseModel()
-            self.storage.new(bs_mdl)
-            key = f"{bs_mdl.__class__.__name__}.{bs_mdl.id}"
-            expected_objects[key] = bs_mdl.to_dict()
-
-        self.storage.save()
+            bs_mdl.save()
+            expected_key = f"{bs_mdl.__class__.__name__}.{bs_mdl.id}"
 
         self.assertTrue(os.path.exists(self.file_path))
         self.assertGreater(os.path.getsize(self.file_path), 0)
@@ -109,7 +106,7 @@ class TestFileStorage(unittest.TestCase):
             objects = {k: v
                        for k, v in json.load(f).items()}
 
-        self.assertDictEqual(expected_objects, objects)
+        self.assertIn(expected_key, list(objects.keys()))
 
     def test_reload_method_reloads_saved_objects(self):
         """test wether the reload method correctly loads objects from file"""
@@ -132,19 +129,15 @@ class TestFileStorage(unittest.TestCase):
         if os.path.exists(self.file_path):
             os.remove(self.file_path)
 
-        expected_objects = {}
+        expected_key = None
         for _ in range(4):
             bs_mdl = BaseModel()
-            self.storage.new(bs_mdl)
-            key = f"{bs_mdl.__class__.__name__}.{bs_mdl.id}"
-            expected_objects[key] = bs_mdl.to_dict()
+            bs_mdl.save()
+            expected_key = f"{bs_mdl.__class__.__name__}.{bs_mdl.id}"
 
         self.storage.reload()
-        existing_objects = self.storage.all()
-
-        existing_objects_dict = {k: v.to_dict()
-                                 for k, v in existing_objects.items()}
-        self.assertEqual(expected_objects, existing_objects_dict)
+        existing_objects = self.storage.all().keys()
+        self.assertIn(expected_key, existing_objects)
 
     def test_reload(self):
         """ Storage file is successfully loaded to __objects """
