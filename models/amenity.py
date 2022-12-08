@@ -15,7 +15,7 @@ class Amenity(BaseModel, Base):
     """A class that represents a amenity
 
     Attribute:
-        name (str): the name of the amenity
+        name : the name of the amenity
     """
 
     __tablename__ = "amenities"

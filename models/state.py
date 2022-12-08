@@ -18,7 +18,7 @@ class State(BaseModel, Base):
     """A class that represents a state
 
     Attribute:
-        name (str): the name of the state
+        name : the name of the state
     """
     __tablename__ = "states"
     name = Column(String(128), nullable=False)
