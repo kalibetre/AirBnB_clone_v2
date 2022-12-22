@@ -7,7 +7,7 @@ from datetime import datetime
 from os import path
 
 import invoke
-from fabric import task
+from fabric import connection, task
 
 web_hosts = ["ubuntu@54.237.44.150", "ubuntu@100.25.0.186"]
 
@@ -29,7 +29,7 @@ def do_pack(ctx):
         return None
 
 
-@task(hosts=web_hosts)
+@task
 def do_deploy(ctx, archive_path):
     """deploys a web_static archive to a web server
 
@@ -49,24 +49,26 @@ def do_deploy(ctx, archive_path):
         rel_path = "/data/web_static/releases/{}/".format(archive_name)
         tmp_path = "/tmp/{}".format(archive_name_w_ext)
 
-        ctx.put(archive_path, "/tmp/")
-        ctx.run("mkdir -p {}".format(rel_path))
-        ctx.run("tar -xzf {} -C {}".format(tmp_path, rel_path))
-        ctx.run("rm {}".format(tmp_path))
-        ctx.run("mv {}web_static/* {}".format(rel_path, rel_path))
-        ctx.run("rm -rf {}web_static".format(rel_path))
+        for host in web_hosts:
+            con = connection.Connection(host=host)
+            con.put(archive_path, remote="/tmp/")
+            con.run("mkdir -p {}".format(rel_path))
+            con.run("tar -xzf {} -C {}".format(tmp_path, rel_path))
+            con.run("rm {}".format(tmp_path))
+            con.run("mv {}web_static/* {}".format(rel_path, rel_path))
+            con.run("rm -rf {}web_static".format(rel_path))
 
-        link = "/data/web_static/current"
-        ctx.run("rm -rf {}".format(link))
-        ctx.run("ln -s {} {}".format(rel_path, link))
-        print("New version deployed!")
+            link = "/data/web_static/current"
+            con.run("rm -rf {}".format(link))
+            con.run("ln -s {} {}".format(rel_path, link))
+            print("New version deployed!")
         return True
     except Exception as e:
         print(e)
         return False
 
 
-@task(hosts=web_hosts)
+@task
 def deploy(ctx):
     """packs and deploys a web static to web servers
 
@@ -79,7 +81,7 @@ def deploy(ctx):
     return do_deploy(ctx, archive_path)
 
 
-@task(hosts=web_hosts)
+@ task(hosts=web_hosts)
 def do_clean(ctx, number=0):
     """cleans outdated archives
 
