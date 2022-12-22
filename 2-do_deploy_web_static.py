@@ -3,11 +3,28 @@
 
 A Fabric script that deploys an archive to a web server
 """
+from datetime import datetime
 from os import path
 
-from fabric.api import env, put, run
+from fabric.api import env, local, put, run
 
 env.hosts = ["54.237.44.150", "100.25.0.186"]
+
+
+def do_pack():
+    """packs a folder to a .tgz archive
+
+    Returns:
+        str: file path
+    """
+    try:
+        local('mkdir -p versions')
+        time = datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = "versions/web_static_{}.tgz".format(time)
+        local("tar -cvzf {} web_static".format(filename))
+        return filename
+    except Exception:
+        return None
 
 
 def do_deploy(archive_path):
