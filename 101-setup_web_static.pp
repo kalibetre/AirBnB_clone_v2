@@ -8,20 +8,23 @@ package { 'nginx' :
   require    => Exec['update']
 }
 
-file { '/data/web_static/shared/':
-  ensure     => 'directory',
-  require    => Package['nginx']
-}
-
-file { '/data/web_static/releases/test/':
-  ensure => 'directory',
-  require    => File['/data/web_static/shared/']
+file { [ '/data',
+  '/data/web_static',
+  '/data/web_static/releases',
+  '/data/web_static/releases/test',
+  '/data/web_static/shared', ]:
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  recurse => true,
 }
 
 file { 'Configure index.html':
   path       => '/data/web_static/releases/test/index.html',
   ensure     => present,
   content    => 'ALX SE School',
+  owner      => 'ubuntu',
+  group      => 'ubuntu',
   require    => File['/data/web_static/releases/test/']
 }
 
@@ -33,18 +36,14 @@ file_line { 'Customer Header':
   require    => Package['nginx']
 }
 
-file { '/data/':
-  ensure     => 'directory',
+file { 'Create Symlink',
+  ensure     => 'link',
+  path       => '/data/web_static/current',
+  target     => '/data/web_static/releases/test/',
   owner      => 'ubuntu',
   group      => 'ubuntu',
-  recurse    => true
+  replace    => true,
   require    => File['Configure index.html']
-}
-
-file { '/data/web_static/current',
-  ensure => 'link',
-  target => '/data/web_static/releases/test/',
-  require    => File['/data/web_static/releases/test/']
 }
 
 file_line { 'Custom Location':
@@ -57,5 +56,11 @@ file_line { 'Custom Location':
 
 service { 'nginx' :
   ensure     => running,
-  require    => [File_line['Custom Location'], File_line['Customer Header']]
+}
+
+exec { 'nginx_reload':
+  path       => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+  user       => 'root',
+  command    => 'service nginx reload',
+  require    => File_line[Custom Location],
 }
