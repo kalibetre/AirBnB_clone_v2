@@ -34,9 +34,10 @@ file_line { 'Customer Header':
 }
 
 file { '/data/':
-  ensure => 'directory',
-  owner => 'ubuntu',
-  group => 'ubuntu',
+  ensure     => 'directory',
+  owner      => 'ubuntu',
+  group      => 'ubuntu',
+  recurse    => true
   require    => File['Configure index.html']
 }
 
