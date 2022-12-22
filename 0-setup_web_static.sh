@@ -25,3 +25,5 @@ LOC_STATIC="\\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n
 sed -i "/server_name _;/ a$LOC_STATIC" /etc/nginx/sites-available/default
 
 service nginx restart
+
+exit 0
