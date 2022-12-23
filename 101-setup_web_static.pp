@@ -8,15 +8,21 @@ package { 'nginx' :
   require => Exec['update']
 }
 
-file { [ '/data',
-  '/data/web_static',
-  '/data/web_static/releases',
-  '/data/web_static/releases/test',
-  '/data/web_static/shared', ]:
-  ensure  => directory,
+exec { 'create shared':
+  command => 'mkdir -p /data/web_static/shared'
+}
+
+exec { 'create test':
+  command => 'mkdir -p /data/web_static/releases/test',
+  require => Exec['create shared']
+}
+
+file { 'permission':
+  path => '/data',
   owner   => 'ubuntu',
   group   => 'ubuntu',
   recurse => true,
+  require => File['Configure index.html']
 }
 
 file { 'Configure index.html':
@@ -25,7 +31,7 @@ file { 'Configure index.html':
   content    => 'ALX SE School',
   owner      => 'ubuntu',
   group      => 'ubuntu',
-  require    => File['/data/web_static/releases/test/']
+  require    => Exec['create test']
 }
 
 file_line { 'Customer Header':
@@ -36,7 +42,7 @@ file_line { 'Customer Header':
   require    => Package['nginx']
 }
 
-file { 'Create Symlink':
+file { 'create symlink':
   ensure     => 'link',
   path       => '/data/web_static/current',
   target     => '/data/web_static/releases/test/',
@@ -51,7 +57,7 @@ file_line { 'Custom Location':
   ensure     => present,
   after      => 'server_name _;',
   line       => "\\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}\n",
-  require    => [Package['nginx'], File['/data/web_static/current']]
+  require    => [Package['nginx'], File['create symlink']]
 }
 
 service { 'nginx' :
