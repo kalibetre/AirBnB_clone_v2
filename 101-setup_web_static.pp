@@ -9,19 +9,16 @@ package { 'nginx' :
 }
 
 exec { 'create shared':
-  command => 'mkdir -p /data/web_static/shared'
+  command => '/usr/bin/env mkdir -p /data/web_static/shared'
 }
 
 exec { 'create test':
-  command => 'mkdir -p /data/web_static/releases/test',
+  command => '/usr/bin/env mkdir -p /data/web_static/releases/test',
   require => Exec['create shared']
 }
 
-file { 'permission':
-  path => '/data',
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  recurse => true,
+exec { 'permission':
+  command => '/usr/bin/env chown -R ubuntu:ubuntu /data/'
   require => File['Configure index.html']
 }
 
