@@ -1,15 +1,69 @@
-# Installs nginx and stuff like that
-exec { '/usr/bin/env apt-get -y update' : }
--> exec { '/usr/bin/env apt-get -y install nginx' : }
--> exec { '/usr/bin/env sed -i "/listen \[::\]:80 default_server/ a\\\trewrite ^/redirect_me http://www.holbertonschool.com permanent;" /etc/nginx/sites-available/default' : }
--> exec { '/usr/bin/env sed -i "/listen \[::\]:80 default_server/ a\\\tadd_header X-Served-By \"\$HOSTNAME\";" /etc/nginx/sites-available/default' : }
--> exec { '/usr/bin/env sed -i "/redirect_me/ a\\\terror_page 404 /custom_404.html;" /etc/nginx/sites-available/default' : }
--> exec { '/usr/bin/env # echo "Ceci n\'est pas une page" > /var/www/html/custom_404.html' : }
--> exec { '/usr/bin/env service nginx start' : }
--> exec { '/usr/bin/env mkdir -p /data/web_static/releases/test/' : }
--> exec { '/usr/bin/env mkdir -p /data/web_static/shared/' : }
--> exec { '/usr/bin/env echo "Hello Holberton School!" > /data/web_static/releases/test/index.html' : }
--> exec { '/usr/bin/env ln -sf /data/web_static/releases/test/ /data/web_static/current' : }
--> exec { '/usr/bin/env sed -i "/^\tlocation \/ {$/ i\\\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n}" /etc/nginx/sites-available/default' : }
--> exec { '/usr/bin/env service nginx restart' : }
--> exec { '/usr/bin/env chown -R ubuntu:ubuntu /data/' : }
+# Sets up a new server for deployment
+exec { 'update':
+  command => '/usr/bin/apt-get update',
+} ->
+
+package { 'nginx':
+  ensure   => 'present',
+  provider => 'apt'
+} ->
+
+file { '/data/':
+    ensure => 'directory',
+    group  => 'ubuntu',
+    owner  => 'ubuntu',
+} ->
+
+file { '/data/web_static/':
+    ensure => 'directory',
+    group  => 'ubuntu',
+    owner  => 'ubuntu',
+} ->
+
+file { '/data/web_static/releases/':
+    ensure => 'directory',
+    group  => 'ubuntu',
+    owner  => 'ubuntu',
+} ->
+
+file { '/data/web_static/shared/':
+    ensure => 'directory',
+    group  => 'ubuntu',
+    owner  => 'ubuntu',
+} ->
+
+file { '/data/web_static/releases/test/':
+    ensure => 'directory',
+    group  => 'ubuntu',
+    owner  => 'ubuntu',
+} ->
+
+file { '/data/web_static/releases/test/index.html':
+  ensure  => 'present',
+  path    => '/data/web_static/releases/test/index.html',
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  content => "Holberton School Puppet\n",
+} ->
+
+file { '/data/web_static/current':
+  ensure  => 'link',
+  replace => 'yes',
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  target  => '/data/web_static/releases/test',
+} ->
+
+exec { 'chown -R ubuntu:ubuntu /data/':
+  path => '/usr/bin/:/usr/local/bin/:/bin/'
+} ->
+
+exec { 'sed':
+  command => "sed -i \
+  '/^\tlisten 80 default_server;$/i location /hbnb_static/ { alias /data/web_static/current/; }' /etc/nginx/sites-available/default",
+  path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+} ->
+
+exec { 'nginx restart':
+  path => '/etc/init.d/'
+}
