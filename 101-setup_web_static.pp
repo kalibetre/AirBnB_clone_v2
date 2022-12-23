@@ -43,7 +43,7 @@ file { '/data/web_static/releases/test/index.html':
   path    => '/data/web_static/releases/test/index.html',
   owner   => 'ubuntu',
   group   => 'ubuntu',
-  content => "Holberton School Puppet\n",
+  content => "ALX School\n",
 } ->
 
 file { '/data/web_static/current':
