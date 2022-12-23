@@ -17,11 +17,23 @@ echo -e "\
 "
 } > /data/web_static/releases/test/index.html
 
-ln -sf /data/web_static/releases/test/ /data/web_static/current
+{
+echo -e "\
+<html>
+  <head>
+  </head>
+  <body>
+    ALX SE School
+  </body>
+</html>
+"
+} | sudo tee /data/web_static/releases/test/index.html
+
+ln -sfn /data/web_static/releases/test/ /data/web_static/current
 
 chown -R ubuntu:ubuntu /data/
 
-LOC_STATIC="\\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}\n"
+LOC_STATIC="\\\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}\n"
 sed -i "/server_name _;/ a$LOC_STATIC" /etc/nginx/sites-available/default
 
 service nginx restart
