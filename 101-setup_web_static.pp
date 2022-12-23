@@ -18,7 +18,7 @@ exec { 'create test':
 }
 
 exec { 'permission':
-  command => '/usr/bin/env chown -R ubuntu:ubuntu /data/'
+  command => '/usr/bin/env chown -R ubuntu:ubuntu /data/',
   require => File['Configure index.html']
 }
 
@@ -31,11 +31,8 @@ file { 'Configure index.html':
   require    => Exec['create test']
 }
 
-file_line { 'Customer Header':
-  path       => '/etc/nginx/sites-available/default',
-  ensure     => present,
-  after      => 'server_name _;',
-  line       => "\tadd_header X-Served-By ${hostname};",
+exec { 'Custom Header':
+  command => '/usr/bin/env sudo sed -i "/server_name _;/ a\\\tadd_header X-Served-By \$hostname;" /etc/nginx/sites-available/default',
   require    => Package['nginx']
 }
 
@@ -49,21 +46,12 @@ file { 'create symlink':
   require    => File['Configure index.html']
 }
 
-file_line { 'Custom Location':
-  path       => '/etc/nginx/sites-available/default',
-  ensure     => present,
-  after      => 'server_name _;',
-  line       => "\\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}\n",
-  require    => [Package['nginx'], File['create symlink']]
+exec { 'Custom Location':
+  command => '/usr/bin/env sed -i "/server_name _;/ a\\\tlocation /hbnb_static\/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t\tindex index.html;\n\t}\n" /etc/nginx/sites-available/default',
+  require => [Package['nginx'], File['create symlink']]
 }
 
-service { 'nginx' :
-  ensure     => running,
-}
-
-exec { 'nginx_reload':
-  path       => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-  user       => 'root',
-  command    => 'service nginx reload',
-  require    => File_line['Custom Location'],
+exec { 'nginx restart':
+  command => '/usr/bin/env service nginx reload',
+  require => File_line['Custom Location']
 }
