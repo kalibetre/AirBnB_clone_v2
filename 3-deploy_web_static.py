@@ -37,10 +37,7 @@ def do_deploy(archive_path):
         bool: True if success else False
     """
     try:
-        if not path.isfile(archive_path):
-            return False
-
-        archive_name_w_ext = archive_path.split("/")[-1]
+        archive_name_w_ext = path.basename(archive_path)
         archive_name = archive_name_w_ext.split(".")[0]
 
         rel_path = "/data/web_static/releases/{}/".format(archive_name)
@@ -51,7 +48,7 @@ def do_deploy(archive_path):
         run("tar -xzf {} -C {}".format(tmp_path, rel_path))
         run("rm {}".format(tmp_path))
         run("mv {}web_static/* {}".format(rel_path, rel_path))
-        run("rm -rf {}web_static".format(rel_path))
+        run("rm -rf {}web_static/".format(rel_path))
 
         link = "/data/web_static/current"
         run("rm -rf {}".format(link))
