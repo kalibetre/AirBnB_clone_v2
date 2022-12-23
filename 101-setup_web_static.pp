@@ -1,57 +1,15 @@
-# Installs and Configures an nginx web server
-exec { 'update':
-  command => '/usr/bin/env apt-get -y update',
-}
-
-package { 'nginx' :
-  ensure  => installed,
-  require => Exec['update']
-}
-
-exec { 'create shared':
-  command => '/usr/bin/env mkdir -p /data/web_static/shared'
-}
-
-exec { 'create test':
-  command => '/usr/bin/env mkdir -p /data/web_static/releases/test',
-  require => Exec['create shared']
-}
-
-exec { 'permission':
-  command => '/usr/bin/env chown -R ubuntu:ubuntu /data/',
-  require => File['Configure index.html']
-}
-
-file { 'Configure index.html':
-  path       => '/data/web_static/releases/test/index.html',
-  ensure     => present,
-  content    => 'ALX SE School',
-  owner      => 'ubuntu',
-  group      => 'ubuntu',
-  require    => Exec['create test']
-}
-
-exec { 'Custom Header':
-  command => '/usr/bin/env sudo sed -i "/server_name _;/ a\\\tadd_header X-Served-By \$hostname;" /etc/nginx/sites-available/default',
-  require    => Package['nginx']
-}
-
-file { 'create symlink':
-  ensure     => 'link',
-  path       => '/data/web_static/current',
-  target     => '/data/web_static/releases/test/',
-  owner      => 'ubuntu',
-  group      => 'ubuntu',
-  replace    => true,
-  require    => File['Configure index.html']
-}
-
-exec { 'Custom Location':
-  command => '/usr/bin/env sed -i "/server_name _;/ a\\\tlocation /hbnb_static\/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t\tindex index.html;\n\t}\n" /etc/nginx/sites-available/default',
-  require => [Package['nginx'], File['create symlink']]
-}
-
-exec { 'nginx restart':
-  command => '/usr/bin/env service nginx reload',
-  require => Exec['Custom Location']
-}
+# Installs nginx and stuff like that
+exec { '/usr/bin/env apt-get -y update' : }
+-> exec { '/usr/bin/env apt-get -y install nginx' : }
+-> exec { '/usr/bin/env sed -i "/listen \[::\]:80 default_server/ a\\\trewrite ^/redirect_me http://www.holbertonschool.com permanent;" /etc/nginx/sites-available/default' : }
+-> exec { '/usr/bin/env sed -i "/listen \[::\]:80 default_server/ a\\\tadd_header X-Served-By \"\$HOSTNAME\";" /etc/nginx/sites-available/default' : }
+-> exec { '/usr/bin/env sed -i "/redirect_me/ a\\\terror_page 404 /custom_404.html;" /etc/nginx/sites-available/default' : }
+-> exec { '/usr/bin/env # echo "Ceci n\'est pas une page" > /var/www/html/custom_404.html' : }
+-> exec { '/usr/bin/env service nginx start' : }
+-> exec { '/usr/bin/env mkdir -p /data/web_static/releases/test/' : }
+-> exec { '/usr/bin/env mkdir -p /data/web_static/shared/' : }
+-> exec { '/usr/bin/env echo "Hello Holberton School!" > /data/web_static/releases/test/index.html' : }
+-> exec { '/usr/bin/env ln -sf /data/web_static/releases/test/ /data/web_static/current' : }
+-> exec { '/usr/bin/env sed -i "/^\tlocation \/ {$/ i\\\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n}" /etc/nginx/sites-available/default' : }
+-> exec { '/usr/bin/env service nginx restart' : }
+-> exec { '/usr/bin/env chown -R ubuntu:ubuntu /data/' : }
