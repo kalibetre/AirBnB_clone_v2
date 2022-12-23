@@ -17,18 +17,6 @@ echo -e "\
 "
 } > /data/web_static/releases/test/index.html
 
-{
-echo -e "\
-<html>
-  <head>
-  </head>
-  <body>
-    ALX SE School
-  </body>
-</html>
-"
-} | sudo tee /data/web_static/releases/test/index.html
-
 ln -sfn /data/web_static/releases/test/ /data/web_static/current
 
 chown -R ubuntu:ubuntu /data/
