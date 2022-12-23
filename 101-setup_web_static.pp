@@ -1,11 +1,11 @@
 # Installs and Configures an nginx web server
 exec { 'update':
-    command => '/usr/bin/env apt-get -y update',
+  command => '/usr/bin/env apt-get -y update',
 }
 
 package { 'nginx' :
-  ensure     => installed,
-  require    => Exec['update']
+  ensure  => installed,
+  require => Exec['update']
 }
 
 file { [ '/data',
@@ -36,7 +36,7 @@ file_line { 'Customer Header':
   require    => Package['nginx']
 }
 
-file { 'Create Symlink',
+file { 'Create Symlink':
   ensure     => 'link',
   path       => '/data/web_static/current',
   target     => '/data/web_static/releases/test/',
@@ -62,5 +62,5 @@ exec { 'nginx_reload':
   path       => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
   user       => 'root',
   command    => 'service nginx reload',
-  require    => File_line[Custom Location],
+  require    => File_line['Custom Location'],
 }
