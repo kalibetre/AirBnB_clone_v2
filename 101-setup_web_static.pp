@@ -53,5 +53,5 @@ exec { 'Custom Location':
 
 exec { 'nginx restart':
   command => '/usr/bin/env service nginx reload',
-  require => File_line['Custom Location']
+  require => Exec['Custom Location']
 }
