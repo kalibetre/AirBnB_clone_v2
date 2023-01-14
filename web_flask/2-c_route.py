@@ -38,8 +38,7 @@ def c_text(text):
     Returns:
         str: c followed by the given text
     """
-    text = text.replace("_", "")
-    return f"C {text}"
+    return "C {}".format(text.replace("_", ""))
 
 
 if __name__ == "__main__":
