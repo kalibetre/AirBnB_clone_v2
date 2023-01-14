@@ -4,7 +4,6 @@
 This Module contains a definition for DBStorage Class
 """
 
-
 from os import getenv
 
 from sqlalchemy import create_engine
@@ -46,7 +45,8 @@ class DBStorage:
         """returns the dictionary all or filtered objects"""
         all_objs = []
         _all_cls = [cls] if cls is not None else [
-            State, City, User, Place, Review, Amenity]
+            State, City, User, Place, Review, Amenity
+        ]
         for _cls in _all_cls:
             all_objs += self.__session.query(_cls)
         return {f"{type(v).__name__}.{v.id}": v for v in all_objs}
@@ -69,10 +69,10 @@ class DBStorage:
     def reload(self):
         """reloads the memory values form database"""
         Base.metadata.create_all(self.__engine)
-        session_maker = sessionmaker(
-            bind=self.__engine, expire_on_commit=False)
+        session_maker = sessionmaker(bind=self.__engine,
+                                     expire_on_commit=False)
         self.__session = scoped_session(session_maker)()
 
     def close(self):
         """cleanup method"""
-        self.__session.close()
+        self.__session.remove()

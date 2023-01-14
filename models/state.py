@@ -24,6 +24,7 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable=False)
 
     if getenv("HBNB_TYPE_STORAGE") != "db":
+
         @property
         def cities(self):
             """Get list of cities that match this state id"""
@@ -35,4 +36,5 @@ class State(BaseModel, Base):
         cities = relationship(
             "City",
             cascade="all, delete, delete-orphan",
-            backref=backref("state"),)
+            backref=backref("state"),
+        )

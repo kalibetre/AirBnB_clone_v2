@@ -4,7 +4,6 @@
 This Module contains a definition for FileStorage Class
 """
 
-
 import importlib
 import json
 import os
@@ -42,8 +41,10 @@ class FileStorage:
         path = self.__file_path
         if (os.path.isfile(path) and os.path.getsize(path) > 0):
             with open(self.__file_path, 'r') as f:
-                self.__objects = {k: self.get_class(k.split(".")[0])(**v)
-                                  for k, v in json.load(f).items()}
+                self.__objects = {
+                    k: self.get_class(k.split(".")[0])(**v)
+                    for k, v in json.load(f).items()
+                }
 
     def delete(self, obj=None):
         """Deletes an object"""
@@ -57,3 +58,7 @@ class FileStorage:
         sub_module = re.sub('(?!^)([A-Z]+)', r'_\1', name).lower()
         module = importlib.import_module(f"models.{sub_module}")
         return getattr(module, name)
+
+    def close(self):
+        """ calls the reload method """
+        self.reload()
