@@ -32,11 +32,14 @@ def hbnb():
 def c_text(text):
     """c_text route
 
+    Args:
+        text (str): text to be appended
+
     Returns:
-        string: simple message c followed by the text given
+        str: c followed by the given text
     """
     text = text.replace("_", "")
-    return f"c {text}"
+    return f"C {text}"
 
 
 if __name__ == "__main__":
