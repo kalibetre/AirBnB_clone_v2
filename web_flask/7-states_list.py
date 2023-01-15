@@ -19,9 +19,6 @@ def states_list():
         string: simple message
     """
     states = sorted(list(storage.all(State).values()), key=lambda x: x.name)
-    for state in states:
-        print(f"{state.id} - {state.name}")
-
     return render_template("7-states_list.html", states=list(states))
 
 
