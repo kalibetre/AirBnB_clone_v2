@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""2-c_route module
+"""7-states_list module
 
 Starts a Flask web application
 """
@@ -23,7 +23,7 @@ def states_list():
 
 
 @app.teardown_appcontext
-def closedb(self):
+def teardown(self):
     """ Cleanup Db Session"""
     storage.close()
 
