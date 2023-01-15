@@ -64,6 +64,7 @@ class Place(BaseModel, Base):
     amenity_ids = []
 
     if getenv("HBNB_TYPE_STORAGE") != "db":
+
         @property
         def reviews(self):
             """Get list of reviews that match this place id"""
@@ -84,11 +85,9 @@ class Place(BaseModel, Base):
             if type_name == 'Amenity' and value.id not in self.amenity_ids:
                 self.amenity_ids.append(value.id)
     else:
-        reviews = relationship(
-            "Review",
-            cascade="all, delete, delete-orphan",
-            backref=backref("place")
-        )
+        reviews = relationship("Review",
+                               cascade="all, delete, delete-orphan",
+                               backref=backref("place"))
         amenities = relationship(
             "Amenity",
             secondary=place_amenity,
