@@ -11,6 +11,93 @@ from models.state import State
 app = Flask(__name__)
 
 
+@app.route("/")
+def hello():
+    """A simple root route
+
+    Returns:
+        string: simple message
+    """
+    return "Hello HBNB!"
+
+
+@app.route("/hbnb", strict_slashes=False)
+def hbnb():
+    """hbnb route
+
+    Returns:
+        string: simple message
+    """
+    return "HBNB"
+
+
+@app.route("/c/<text>", strict_slashes=False)
+def c_text(text):
+    """c_text route
+
+    Args:
+        text (str): text to be appended
+
+    Returns:
+        str: c followed by the given text
+    """
+    return "C {}".format(text.replace("_", " "))
+
+
+@app.route("/python", strict_slashes=False)
+@app.route("/python/<text>", strict_slashes=False)
+def python_text(text="is cool"):
+    """python_text route with and without parameter
+
+    Args:
+        text (str): text to be appended defaults to 'is cool'
+
+    Returns:
+        str: c followed by the given text
+    """
+    return "Python {}".format(text.replace("_", " "))
+
+
+@app.route("/number/<int:n>", strict_slashes=False)
+def number(n):
+    """number that accepts only int numbers
+
+    Args:
+        n (int): number
+
+    Returns:
+        str: n is number
+    """
+    return "{} is a number".format(n)
+
+
+@app.route("/number_template/<int:n>", strict_slashes=False)
+def number_template(n):
+    """number_template route that accepts only int number and renders
+    a template
+
+    Args:
+        n (int): number
+    """
+    return render_template("5-number.html", n=n)
+
+
+@app.route("/number_odd_or_even/<int:n>", strict_slashes=False)
+def number_odd_or_even(n):
+    """checks if n is even or odd
+
+    Args:
+        n (int): number
+    """
+    return render_template("6-number_odd_or_even.html", n=n)
+
+
+@app.teardown_appcontext
+def teardown(self):
+    """ Cleanup Db Session"""
+    storage.close()
+
+
 @app.route("/states_list", strict_slashes=False)
 def states_list():
     """Lists states
@@ -22,12 +109,5 @@ def states_list():
     return render_template("7-states_list.html", states=list(states))
 
 
-@app.teardown_appcontext
-def teardown(self):
-    """ Cleanup Db Session"""
-    storage.close()
-
-
 if __name__ == "__main__":
-    storage.reload()
     app.run()
