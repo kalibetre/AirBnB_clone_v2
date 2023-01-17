@@ -25,8 +25,8 @@ def states_list():
     Returns:
         string: simple message
     """
-    states = sorted(list(storage.all(State).values()), key=lambda x: x.name)
-    return render_template("7-states_list.html", states=list(states))
+    states = list(storage.all(State).values())
+    return render_template("7-states_list.html", states=states)
 
 
 if __name__ == "__main__":
