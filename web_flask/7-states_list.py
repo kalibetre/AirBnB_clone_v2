@@ -1,8 +1,5 @@
 #!/usr/bin/python3
 """A Flask web application
-
-supports the following end points:
-    - /states_list : returns list of states
 """
 from flask import Flask, render_template
 
@@ -14,7 +11,8 @@ app = Flask(__name__)
 
 @app.teardown_appcontext
 def teardown(self):
-    """ Cleanup Db Session"""
+    """ Cleanup Db Session
+    """
     storage.close()
 
 
