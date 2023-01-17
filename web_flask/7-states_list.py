@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 """A Flask web application
+
+supported api end points
+  - /states_list : returns list of the states
 """
 from flask import Flask, render_template
 
