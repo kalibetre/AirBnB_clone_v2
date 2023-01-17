@@ -3,6 +3,7 @@
 
 supports the following end points:
     - /states_list : returns list of states
+    - /cities_by_states: returns list of cities grouped by state
 """
 from flask import Flask, render_template
 
