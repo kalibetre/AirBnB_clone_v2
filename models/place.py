@@ -29,6 +29,7 @@ place_amenity = Table(
         primary_key=True,
         nullable=False,
     ),
+    mysql_charset="latin1",
 )
 
 
@@ -48,7 +49,7 @@ class Place(BaseModel, Base):
         longitude : The longitude of the place.
         amenity_ids : A list of Amenity ids.
     """
-
+    __table_args__ = ({'mysql_default_charset': 'latin1'})
     __tablename__ = "places"
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
     user_id = Column(String(60), ForeignKey("users.id"), nullable=False)

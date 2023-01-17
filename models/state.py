@@ -20,6 +20,7 @@ class State(BaseModel, Base):
     Attribute:
         name : the name of the state
     """
+    __table_args__ = ({'mysql_default_charset': 'latin1'})
     __tablename__ = "states"
     name = Column(String(128), nullable=False)
 

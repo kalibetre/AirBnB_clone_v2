@@ -18,6 +18,7 @@ class Amenity(BaseModel, Base):
         name : the name of the amenity
     """
 
+    __table_args__ = ({'mysql_default_charset': 'latin1'})
     __tablename__ = "amenities"
     name = Column(String(128), nullable=False)
     place_amenities = relationship("Place", secondary=place_amenity)

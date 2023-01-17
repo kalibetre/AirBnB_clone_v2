@@ -17,6 +17,7 @@ class Review(BaseModel, Base):
         user_id : The User id.
         text : The text of the review.
     """
+    __table_args__ = ({'mysql_default_charset': 'latin1'})
     __tablename__ = "reviews"
     place_id = Column(String(60), ForeignKey("places.id"), nullable=False)
     user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
