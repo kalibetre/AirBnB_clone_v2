@@ -21,32 +21,30 @@ def teardown(self):
 
 
 @app.route("/states", strict_slashes=False)
-def states():
-    """Lists states
-
-    Returns:
-        html: list of states in template format
-    """
-    states = list(storage.all(State).values())
-    return render_template("9-states.html", display="multiple", states=states)
-
-
 @app.route("/states/<id>", strict_slashes=False)
-def state(id):
+def state(id=None):
     """Returns a state information
 
     Args:
-        id (int): the id of the state
+        id (str): the id of the state
 
     Returns:
         html: state information n a template format
     """
     states = list(storage.all(State).values())
-    result = list(filter(lambda x: x.id == id, states))
-    state = result[0] if len(result) > 0 else False
-    return render_template("9-states.html", display="single", state=state)
+    if id is None:
+        return render_template(
+            "9-states.html",
+            display="multiple",
+            states=states,
+        )
+    else:
+        result = list(filter(lambda x: x.id == id, states))
+        state = result[0] if len(result) > 0 else False
+        return render_template("9-states.html", display="single", state=state)
 
 
 if __name__ == "__main__":
     storage.reload()
     app.run()
+    # app.run("0.0.0.0", 5000)
