@@ -71,8 +71,9 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
         session_maker = sessionmaker(bind=self.__engine,
                                      expire_on_commit=False)
-        self.__session = scoped_session(session_maker)()
+        Session = scoped_session(session_maker)
+        self.__session = Session()
 
     def close(self):
         """cleanup method"""
-        self.__session.remove()
+        self.__session.close()
