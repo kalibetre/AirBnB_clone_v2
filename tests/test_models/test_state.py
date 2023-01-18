@@ -66,7 +66,7 @@ class TestState(unittest.TestCase):
         self.test_obj.my_number = 89
         cls_name = State.__name__
         id = self.test_obj.id
-        expected = f"[{cls_name}] ({id}) {self.test_obj.to_dict()}"
+        expected = "[{}] ({}) {}".format(cls_name, id, self.test_obj.to_dict())
         output = StringIO()
         sys.stdout = output
         print(self.test_obj)
@@ -94,8 +94,7 @@ class TestState(unittest.TestCase):
         """
         temp_dict = self.test_obj.to_dict()
         self.assertIn("__class__", temp_dict.keys())
-        self.assertEqual(temp_dict["__class__"],
-                         State.__name__)
+        self.assertEqual(temp_dict["__class__"], State.__name__)
 
 
 if __name__ == "__main__":

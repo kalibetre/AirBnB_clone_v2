@@ -56,8 +56,9 @@ class TestReview(unittest.TestCase):
 
     def test_public_attributes_exist(self):
         """tests wether the public instance attributes exist."""
-        req_att = ["id", "created_at", "updated_at",
-                   "place_id", "user_id", "text"]
+        req_att = [
+            "id", "created_at", "updated_at", "place_id", "user_id", "text"
+        ]
         for attrib in req_att:
             self.assertTrue(hasattr(self.test_obj, attrib))
 
@@ -72,7 +73,7 @@ class TestReview(unittest.TestCase):
         self.test_obj.my_number = 89
         cls_name = Review.__name__
         id = self.test_obj.id
-        expected = f"[{cls_name}] ({id}) {self.test_obj.to_dict()}"
+        expected = "[{}] ({}) {}".format(cls_name, id, self.test_obj.to_dict())
         output = StringIO()
         sys.stdout = output
         print(self.test_obj)
@@ -100,8 +101,7 @@ class TestReview(unittest.TestCase):
         """
         temp_dict = self.test_obj.to_dict()
         self.assertIn("__class__", temp_dict.keys())
-        self.assertEqual(temp_dict["__class__"],
-                         Review.__name__)
+        self.assertEqual(temp_dict["__class__"], Review.__name__)
 
 
 if __name__ == "__main__":

@@ -20,11 +20,10 @@ class TestFileStorageDocsAndStyle(unittest.TestCase):
     def test_pycodestyle(self):
         """Tests compliance with pycodestyle"""
         style = pycodestyle.StyleGuide(quiet=False)
-        result = style.check_files(
-            [
-                "models/engine/file_storage.py",
-                "tests/test_models/test_engine/test_file_storage.py"
-            ])
+        result = style.check_files([
+            "models/engine/file_storage.py",
+            "tests/test_models/test_engine/test_file_storage.py"
+        ])
         self.assertEqual(result.total_errors, 0)
 
     def test_module_docstring(self):
@@ -89,7 +88,7 @@ class TestFileStorage(unittest.TestCase):
         """tests wether the instance method 'new' adds new object"""
         temp_obj = BaseModel()
         self.storage.new(temp_obj)
-        key = f"{temp_obj.__class__.__name__}.{temp_obj.id}"
+        key = "{}.{}".format(temp_obj.__class__.__name__, temp_obj.id)
         self.assertIn(key, self.storage.all().keys())
 
     def test_save_method_saves_objects_to_file(self):
@@ -98,13 +97,12 @@ class TestFileStorage(unittest.TestCase):
         for _ in range(4):
             bs_mdl = BaseModel()
             bs_mdl.save()
-            expected_key = f"{bs_mdl.__class__.__name__}.{bs_mdl.id}"
+            expected_key = "{}.{}".format(bs_mdl.__class__.__name__, bs_mdl.id)
 
         self.assertTrue(os.path.exists(self.file_path))
         self.assertGreater(os.path.getsize(self.file_path), 0)
         with open(self.file_path, 'r') as f:
-            objects = {k: v
-                       for k, v in json.load(f).items()}
+            objects = {k: v for k, v in json.load(f).items()}
 
         self.assertIn(expected_key, list(objects.keys()))
 
@@ -114,7 +112,7 @@ class TestFileStorage(unittest.TestCase):
         for _ in range(4):
             bs_mdl = BaseModel()
             self.storage.new(bs_mdl)
-            key = f"{bs_mdl.__class__.__name__}.{bs_mdl.id}"
+            key = "{}.{}".format(bs_mdl.__class__.__name__, bs_mdl.id)
             expected_objects[key] = bs_mdl.to_dict()
 
         self.storage.save()
@@ -133,7 +131,7 @@ class TestFileStorage(unittest.TestCase):
         for _ in range(4):
             bs_mdl = BaseModel()
             bs_mdl.save()
-            expected_key = f"{bs_mdl.__class__.__name__}.{bs_mdl.id}"
+            expected_key = "{}.{}".format(bs_mdl.__class__.__name__, bs_mdl.id)
 
         self.storage.reload()
         existing_objects = self.storage.all().keys()

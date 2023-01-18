@@ -87,7 +87,7 @@ class TestBaseModel(unittest.TestCase):
         self.test_obj.my_number = 89
         cls_name = BaseModel.__name__
         id = self.test_obj.id
-        expected = f"[{cls_name}] ({id}) {self.test_obj.to_dict()}"
+        expected = "[{}] ({}) {}".format(cls_name, id, self.test_obj.to_dict())
         output = StringIO()
         sys.stdout = output
         print(self.test_obj)
@@ -98,8 +98,9 @@ class TestBaseModel(unittest.TestCase):
         """tests wether public instance methods - "save" "to_dict" exist."""
         req_att = ["save", "to_dict"]
         for attrib in req_att:
-            self.assertTrue(hasattr(self.test_obj, attrib)
-                            and callable(getattr(self.test_obj, attrib)))
+            self.assertTrue(
+                hasattr(self.test_obj, attrib)
+                and callable(getattr(self.test_obj, attrib)))
 
     def test_save_method_updates_updated_at_value(self):
         """save method shall update updated_at"""
@@ -122,8 +123,8 @@ class TestBaseModel(unittest.TestCase):
         self.test_obj.save()
 
         storage.reload()
-        saved_obj = storage.all(
-        )[f"{self.test_obj.__class__.__name__}.{self.test_obj.id}"]
+        saved_obj = storage.all()["{}.{}".format(
+            self.test_obj.__class__.__name__, self.test_obj.id)]
 
         self.assertNotEqual(old_date, saved_obj.updated_at)
 
@@ -154,8 +155,7 @@ class TestBaseModel(unittest.TestCase):
         """
         temp_dict = self.test_obj.to_dict()
         self.assertIn("__class__", temp_dict.keys())
-        self.assertEqual(temp_dict["__class__"],
-                         BaseModel.__name__)
+        self.assertEqual(temp_dict["__class__"], BaseModel.__name__)
 
     def test_to_dict_formats_dates_with_isoformat(self):
         """to_dict should store dates in isoformat"""

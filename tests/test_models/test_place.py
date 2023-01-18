@@ -57,19 +57,18 @@ class TestPlace(unittest.TestCase):
         self.test_obj.price_by_night = 3
         self.test_obj.latitude = 10.56
         self.test_obj.longitude = 34.34
-        self.test_obj.amenity_ids = [
-            str(uuid.uuid4()), str(uuid.uuid4())
-        ]
+        self.test_obj.amenity_ids = [str(uuid.uuid4()), str(uuid.uuid4())]
 
     def test_place_is_subclass_of_base_model(self):
         self.assertTrue(issubclass(Place, BaseModel))
 
     def test_public_attributes_exist(self):
         """tests wether the public instance attributes exist."""
-        req_att = ["id", "created_at", "updated_at",
-                   "city_id", "user_id", "name", "description", "number_rooms",
-                   "number_bathrooms", "max_guest", "price_by_night",
-                   "latitude", "longitude", "amenity_ids"]
+        req_att = [
+            "id", "created_at", "updated_at", "city_id", "user_id", "name",
+            "description", "number_rooms", "number_bathrooms", "max_guest",
+            "price_by_night", "latitude", "longitude", "amenity_ids"
+        ]
         for attrib in req_att:
             self.assertTrue(hasattr(self.test_obj, attrib))
 
@@ -78,8 +77,9 @@ class TestPlace(unittest.TestCase):
         req_att_s = ["city_id", "user_id", "name", "description"]
         for attrib in req_att_s:
             self.assertTrue(type(getattr(self.test_obj, attrib)), str)
-        req_att_i = ["number_rooms", "number_bathrooms", "max_guest",
-                     "price_by_night"]
+        req_att_i = [
+            "number_rooms", "number_bathrooms", "max_guest", "price_by_night"
+        ]
         for attrib in req_att_i:
             self.assertTrue(type(getattr(self.test_obj, attrib)), int)
         req_att_f = ["latitude", "longitude"]
@@ -93,7 +93,7 @@ class TestPlace(unittest.TestCase):
         self.test_obj.my_number = 89
         cls_name = Place.__name__
         id = self.test_obj.id
-        expected = f"[{cls_name}] ({id}) {self.test_obj.to_dict()}"
+        expected = "[{}] ({}) {}".format(cls_name, id, self.test_obj.to_dict())
         output = StringIO()
         sys.stdout = output
         print(self.test_obj)
@@ -121,8 +121,7 @@ class TestPlace(unittest.TestCase):
         """
         temp_dict = self.test_obj.to_dict()
         self.assertIn("__class__", temp_dict.keys())
-        self.assertEqual(temp_dict["__class__"],
-                         Place.__name__)
+        self.assertEqual(temp_dict["__class__"], Place.__name__)
 
 
 if __name__ == "__main__":

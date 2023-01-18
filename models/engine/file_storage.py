@@ -29,7 +29,7 @@ class FileStorage:
 
     def new(self, obj):
         """Set in __objects obj with key <obj_class_name>.id"""
-        self.__objects[f"{obj.__class__.__name__}.{obj.id}"] = obj
+        self.__objects["{}.{}".format(obj.__class__.__name__, obj.id)] = obj
 
     def save(self):
         """Serialize __objects to the JSON file __file_path."""
@@ -50,13 +50,14 @@ class FileStorage:
         """Deletes an object"""
         if obj is None:
             return None
-        key = f"{obj.__class__.__name__}.{obj.id}"
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
         return self.__objects.pop(key, None)
 
     def get_class(self, name):
         """ returns a class from models module using its name"""
         sub_module = re.sub('(?!^)([A-Z]+)', r'_\1', name).lower()
-        module = importlib.import_module(f"models.{sub_module}")
+        module = importlib.import_module(
+            "models.{sub_module}".format(sub_module))
         return getattr(module, name)
 
     def close(self):

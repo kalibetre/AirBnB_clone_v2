@@ -19,10 +19,8 @@ class BaseModel:
     """BaseModel Class"""
 
     id = Column(String(60), nullable=False, primary_key=True)
-    created_at = Column(
-        DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(
-        DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     def __init__(self, *args, **kwargs):
         """__init__ method & instantiation of class BaseModel
@@ -59,12 +57,10 @@ class BaseModel:
         returns a dictionary containing all
         keys/values of __dict__ of the instance
         """
-        bs_dict = (
-            {
-                k: (v.isoformat() if isinstance(v, datetime) else v)
-                for (k, v) in self.__dict__.items()
-            }
-        )
+        bs_dict = ({
+            k: (v.isoformat() if isinstance(v, datetime) else v)
+            for (k, v) in self.__dict__.items()
+        })
         bs_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in list(bs_dict.keys()):
             del bs_dict["_sa_instance_state"]
@@ -72,4 +68,8 @@ class BaseModel:
 
     def __str__(self) -> str:
         """should print/str representation of the BaseModel instance."""
-        return f"[{self.__class__.__name__}] ({self.id}) {self.to_dict()}"
+        return "[{}] ({}) {}".format(
+            self.__class__.__name__,
+            self.id,
+            self.to_dict(),
+        )
